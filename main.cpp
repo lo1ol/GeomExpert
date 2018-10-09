@@ -1,22 +1,29 @@
 #include <iostream>
 #include "figure3d.h"
+#include <list>
+#include <algorithm>
+#include <iterator>
+#include <functional>
 
+using namespace figures;
+
+std::ostream &operator<<(std::ostream &os, const Figure3D *fig){
+    return os<<*fig;
+}
 
 int main()
 {
-    figures::Figure3D * fig;
-    try{
-     fig = new figures::Pyramid(1);
+    std::list<Figure3D *> ls;
+    ls.push_back(new Cube(1.5));
+    ls.push_back(new Parallelepiped(1.2, 1.4, 2.));
+    ls.push_back(new Cylinder());
+    ls.push_front(new Pyramid(1, 4, 5));
+    for(const auto fig: ls){
+        std::cout<<fig<<std::endl;
     }
-    catch(...){
-        std::cout<<"kek\n";
+    for(auto fig : ls){
+        delete fig;
     }
-    if(!(std::cin>>*fig)){
-        std::cout<<"BAD input!\n";
-    }
-    else{
-        //dynamic_cast<figures::Cylinder *>(fig)->setRadius(3);
-        std::cout<<*fig<<std::endl;
-    }
-    delete fig;
+    ls.clear();
+    Cube cube((Parallelepiped()));
 }

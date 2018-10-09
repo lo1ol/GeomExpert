@@ -10,20 +10,16 @@ public:
     Figure3D()=default;
     Figure3D(const Figure3D &)=default;
     Figure3D(Figure3D &&)=default;
-    Figure3D &operator=(const Figure3D &other);
-    Figure3D &operator=(Figure3D &&other);
     virtual ~Figure3D();
 
     virtual double volume() const =0;
     virtual Figure3D *copy() const =0;
-    virtual void assign(const Figure3D &other)=0;
-    virtual void move(Figure3D &&other)=0;
 
 private:
     virtual std::ostream &print(std::ostream &os) const =0;
     virtual std::istream &input(std::istream &is)=0;
-    friend std::istream &operator>>(std::istream &is, Figure3D &fig){ return fig.input(is); }
-    friend std::ostream &operator<<(std::ostream &os, const Figure3D &fig){ return fig.print(os)<<"\n\tvolume: "<<fig.volume(); }
+    friend std::istream &operator>>(std::istream &is, Figure3D &fig);
+    friend std::ostream &operator<<(std::ostream &os, const Figure3D &fig);
 };
 
 
@@ -36,8 +32,6 @@ public:
 
     double volume() const final override;
     Cylinder *copy() const final override;
-    void assign(const Figure3D &other) final override;
-    void move(Figure3D &&other) final override{ assign(other); }
 
     double getRadius() const;
     void setRadius(double value);
@@ -63,8 +57,6 @@ public:
 
     double volume() const final override;
     Parallelepiped *copy() const override;
-    void assign(const Figure3D &other) override;
-    void move(Figure3D &&other) override { assign(other); }
 
     bool isCube() const;
     void makeCube(double value);
@@ -91,10 +83,9 @@ class Cube: public Parallelepiped{
 public:
     Cube(double height = 1.);
     Cube(const Cube &)=default;
+    explicit Cube(const Parallelepiped &);
     ~Cube() final override=default;
 
-    void assign(const Figure3D &other) final override;
-    void move(Figure3D &&other) final override { assign(other); }
     Cube *copy() const final override;
 
 
@@ -114,8 +105,6 @@ public:
 
     virtual double volume() const final override;
     Pyramid *copy() const final override;
-    void assign(const Figure3D &other) final override;
-    void move(Figure3D &&other) final override { assign(other); }
 
     double getHeight() const;
     void setHeight(double value);
