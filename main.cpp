@@ -1,29 +1,36 @@
 #include <iostream>
 #include "figure3d.h"
 #include <list>
-#include <algorithm>
-#include <iterator>
-#include <functional>
+#include <memory>
 
 using namespace figures;
 
-std::ostream &operator<<(std::ostream &os, const Figure3D *fig){
-    return os<<*fig;
-}
-
 int main()
 {
-    std::list<Figure3D *> ls;
-    ls.push_back(new Cube(1.5));
-    ls.push_back(new Parallelepiped(1.2, 1.4, 2.));
-    ls.push_back(new Cylinder());
-    ls.push_front(new Pyramid(1, 4, 5));
-    for(const auto fig: ls){
-        std::cout<<fig<<std::endl;
-    }
-    for(auto fig : ls){
-        delete fig;
-    }
+    typedef std::unique_ptr<Figure3D> uf_ptr;
+
+    uf_ptr fig(new Cylinder(CylinderParams(1, 2)));
+    std::cout<<*fig<<std::endl;
+    std::list<uf_ptr> ls;
+    ls.push_back(uf_ptr(new Cylinder()));
+    ls.push_back(uf_ptr(new Cube()));
+    ls.push_back(uf_ptr(new Pyramid(PyramidParams(1, 1))));
+    ls.push_back(uf_ptr(new Parallelepiped()));
+    for(const auto &elem: ls)
+        std::cout<<*elem<<std::endl;
     ls.clear();
-    Cube cube((Parallelepiped()));
+
+    Pyramid fig2 = Pyramid();
+    std::cout<<fig2<<std::endl;
+    fig2 = Pyramid(PyramidParams(1, 2));
+    std::cout<<fig2<<std::endl;
+    fig2.setParams(PyramidParams(2, 5));
+    std::cout<<fig2<<std::endl;
+    std::cin>>fig2;
+    std::cout<<fig2<<std::endl;
+
+    uf_ptr fig3(fig2.copy());
+    fig2.setParams(PyramidParams(43));
+    std::cout<<fig2<<std::endl<<*fig3<<std::endl;
+
 }

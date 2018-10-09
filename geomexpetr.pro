@@ -5,7 +5,9 @@ CONFIG -= qt
 
 SOURCES += \
         main.cpp \
-    figure3d.cpp
+    figure3d.cpp \
+    #geomlist.cpp
 
 HEADERS += \
-    figure3d.h
+    figure3d.h \
+    #geomlist.h
