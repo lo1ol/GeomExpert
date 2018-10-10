@@ -6,46 +6,52 @@
 
 namespace figures {
 
-class Node{
-public:
-    Node();
-    Node(Node &prev, std::shared_ptr<figures::Figure3D> &val);
-
-    std::shared_ptr<figures::Figure3D> &operator*();
-    const std::shared_ptr<figures::Figure3D> &operator*() const;
-
-protected:
-    Node &prev;
-    Node &next;
-    std::shared_ptr<figures::Figure3D> val;
-};
-
-class GeomIterator{
-public:
-    GeomIterator();
-    GeomIterator(Node &);
-    GeomIterator &operator--();
-    GeomIterator &operator++();
-    const GeomIterator &operator--(int);
-    const GeomIterator &operator++(int);
-
-private:
-    Node &node;
-};
 
 class GeomList
 {
-public:
-    typedef std::shared_ptr<figures::Figure3D> elem;
-
-    GeomList();
-    void push(const elem &fig);
-    elem pop();
-    GeomIterator& insert(GeomIterator &iter, const elem&);
-    
 protected:
-    Node root;
+    typedef figures::Figure3D value_type;
+
+    struct Node{
+        Node *next;
+        value_type *val;
+    };
+
+public:
+    GeomList():
+        root(nullptr), last(nullptr){ }
+    GeomList(const GeomList &);
+    GeomList(GeomList &&);
+    GeomList &operator=(const GeomList&);
+    GeomList &operator=(GeomList &&);
+    ~GeomList(){ clear(); }
+
+
+    void push(const value_type &fig){ push(fig.copy()); }
+    void push(const value_type *fig); //take ownership to itself
+    void clear();
+    friend std::ostream &operator<<(std::ostream &os, const GeomList &);
+    std::ostream &print(std::ostream &os) const;
+    bool empty() const { return root == nullptr; }
+protected:
+    Node *root;
+    Node *last;
 };
+
+
+class ExtendedGeomList: public GeomList{
+public:
+    ExtendedGeomList()=default;
+    ExtendedGeomList(const ExtendedGeomList &)=default;
+    ExtendedGeomList(ExtendedGeomList &&)=default;
+    explicit ExtendedGeomList(const GeomList &other):GeomList(other){}
+    explicit ExtendedGeomList(GeomList &&other):GeomList(std::move(other)){}
+    ExtendedGeomList &operator=(const ExtendedGeomList &)=default;
+    ExtendedGeomList &operator=(ExtendedGeomList &&)=default;
+    void addAfterEachNth(const value_type &fig, size_t N) {addAfterEachNth(&fig, N);}
+    void addAfterEachNth(const value_type *fig, size_t N);
+};
+
 
 }
 

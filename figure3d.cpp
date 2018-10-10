@@ -183,6 +183,12 @@ Figure3D &Figure3D::operator=(const Figure3D &other)
     return *this;
 }
 
+Figure3D &Figure3D::operator=(Figure3D &&other)
+{
+    params = std::move(other.params);
+    return *this;
+}
+
 Figure3D::~Figure3D(){}
 
 

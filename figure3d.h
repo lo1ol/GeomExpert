@@ -116,7 +116,10 @@ public:
         params(params.copy()){}
     Figure3D(const Figure3D &other):
         params(other.params->copy()){}
-    Figure3D &operator=(const Figure3D &other);
+    Figure3D(Figure3D &&other):
+        params(std::move(other.params)){}
+    Figure3D &operator=(const Figure3D &);
+    Figure3D &operator=(Figure3D &&);
     virtual ~Figure3D() /*=default*/;
 
     const Figure3DParams *getParams() const {return params->copy();}
@@ -137,8 +140,10 @@ class Cylinder: public Figure3D{
 public:
     Cylinder(const CylinderParams &params = CylinderParams()):
         Figure3D(params) {}
-    Cylinder(const Cylinder&)=default;
+    Cylinder(const Cylinder &)=default;
+    Cylinder(Cylinder &&)=default;
     Cylinder &operator=(const Cylinder &)=default;
+    Cylinder &operator=(Cylinder &&)=default;
     ~Cylinder()final override =default;
 
     double volume() const final override;
@@ -151,7 +156,9 @@ public:
     Parallelepiped(const ParallelepipedParams &params = ParallelepipedParams()):
     Figure3D(params) {}
     Parallelepiped(const Parallelepiped &)=default;
-    Parallelepiped &operator=(const Parallelepiped & other) =default;
+    Parallelepiped(Parallelepiped &&)=default;
+    Parallelepiped &operator=(const Parallelepiped &) =default;
+    Parallelepiped &operator=(Parallelepiped &&) =default;
     ~Parallelepiped() override =default;
 
     double volume() const final override;
@@ -163,7 +170,9 @@ public:
     Cube(const CubeParams &params = CubeParams(1.)):
         Parallelepiped (params) {}
     Cube(const Cube &)=default;
+    Cube(Cube &&)=default;
     Cube &operator=(const Cube &)=default;
+    Cube &operator=(Cube &&)=default;
     ~Cube() final override=default;
 
     Cube *copy() const final override;
@@ -174,7 +183,9 @@ public:
     Pyramid(const PyramidParams &params = PyramidParams()):
         Figure3D(params) {}
     Pyramid(const Pyramid &)=default;
+    Pyramid(Pyramid &&)=default;
     Pyramid &operator=(const Pyramid &)=default;
+    Pyramid &operator=(Pyramid &&)=default;
     ~Pyramid() final override =default;
 
     virtual double volume() const final override;
