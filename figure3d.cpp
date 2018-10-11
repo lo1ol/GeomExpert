@@ -5,11 +5,14 @@
 #include <memory>
 #include <string>
 
+//used to make easeare implement class method of copy itself
+
 #define MAKE_COPY_METHOD_OF(myclass) \
 myclass *myclass::copy() const \
 { \
     return new myclass(*this); \
 } \
+
 
 
 namespace figures{
@@ -184,13 +187,14 @@ PyramidParams::PyramidParams(double height, double innerRadius, unsigned sideCnt
 
 Figure3D &Figure3D::operator=(const Figure3D &other)
 {
-    params.reset(other.params->copy());
+    params.reset(other.params->copy()); //free previous allocated memory for parametrs
+                                        //and set new from the copy of other
     return *this;
 }
 
 Figure3D &Figure3D::operator=(Figure3D &&other)
 {
-    params = std::move(other.params);
+    params = std::move(other.params); // parametrs of other are correct and cotain nullptr
     return *this;
 }
 
@@ -215,7 +219,7 @@ std::ostream &operator<<(std::ostream &os, const Figure3D &fig){
     return p.radius*p.radius*M_PI*p.height;
 }
 
-MAKE_COPY_METHOD_OF(Cylinder)
+MAKE_COPY_METHOD_OF(Cylinder) // implementation of Cylinder *Cylinder::copy();
 
 
 

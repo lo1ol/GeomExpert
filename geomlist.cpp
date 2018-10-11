@@ -5,12 +5,12 @@ namespace figures {
 GeomList::GeomList(const GeomList &other):
     GeomList()
 {
-    if(other.root != nullptr){
-        last = root = new Node{nullptr, other.root->val->copy()};
+    if(other.root != nullptr){ // check that other ifs not empty
+        last = root = new Node{nullptr, other.root->val->copy()}; //  inizialize root. make last same
 
-        for(auto otherNode = other.root->next; otherNode != nullptr; otherNode = otherNode->next){
-            last->next = new Node{nullptr, otherNode->val->copy()};
-            last = last->next;
+            // copy untill go to the last node (nullptr)
+        for(auto otherNode = other.root->next /*take next node*/; otherNode != nullptr; otherNode = otherNode->next){
+            last = last->next = new Node{nullptr, otherNode->val->copy()}; // create new Node from copy of val and nullptr's next Node
         }
     }
 }
@@ -18,32 +18,33 @@ GeomList::GeomList(const GeomList &other):
 GeomList::GeomList(GeomList &&other):
     root(other.root), last(other.last)
 {
-    other.root = other.last = nullptr;
+    other.root = other.last = nullptr; //keep other correct
 }
 
 GeomList &GeomList::operator=(const GeomList &other)
 {
-    if(this != &other){
-        auto temp(other);
-        *this = std::move(temp);
+    if(this != &other){ // optimisatin for same object
+        auto temp(other); //construct new from other
+        this->clear(); //clear after copy to keep correct this if error occured
+        *this = std::move(temp); // move temp
     }
     return *this;
 }
 
 GeomList &GeomList::operator=(GeomList &&other)
 {
-    if(this != &other){
-        this->clear();
+    if(this != &other){ //
+        this->clear(); // clear previous state
         root = other.root;
         last = other.last;
-        other = GeomList();
+        other = GeomList(); // keep other correct
     }
     return *this;
 }
 
 void GeomList::push(GeomList::value_type * &&fig)
 {
-    if(root == nullptr){
+    if(root == nullptr){ // if first node
         root = new Node{nullptr, fig};
         last = root;
     }
@@ -55,7 +56,7 @@ void GeomList::push(GeomList::value_type * &&fig)
 
 void GeomList::clear()
 {
-    while(root!=nullptr){
+    while(root!=nullptr){ //clear itself deleting consistently
         auto nextNode = root->next;
         delete root->val;
         delete root;
@@ -83,14 +84,14 @@ void ExtendedGeomList::addAfterEachNth(value_type* &&fig, size_t N)
 {
     size_t i = 0;
     auto curNode = root;
-    while (curNode != nullptr) {
-        if(++i % N == 0){
-            auto nextNode = curNode->next;
-            curNode->next = new Node{nextNode, fig->copy()};
-            curNode = curNode->next;
+    while (curNode != nullptr) { //until go to the last
+        if(++i % N == 0){ //if Nth insert copy
+            auto nextNode = curNode->next;  // keep next Node
+            curNode->next = new Node{nextNode, fig->copy()}; //create new Node and bind to the current node
+            curNode = curNode->next; // go on
         }
         curNode = curNode->next;
     }
-    delete fig;
+    delete fig; // delete object which we use to make copy
 }
 }
