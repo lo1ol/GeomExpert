@@ -35,7 +35,7 @@ int main()
     }
 
 
-    GeomList figlist;
+    ExtendedGeomList figlist;
     std::cout<<"Great! Let's start. wheach figure you want to discover?"
              <<"\ntype \"help\" to get assistent"<<std::endl;
 
@@ -139,10 +139,9 @@ exit:
         return 0;
     }
 
-    ExtendedGeomList exfiglist(std::move(figlist)); //convert to the ExtendedGeomList
-    exfiglist.addAfterEachNth(*fig, step); //place copy of input element after each Nth elem
-    std::cout<<"Your figure list:\n"
-             <<exfiglist<<std::endl;
+    figlist.addAfterEachNth(*fig, step); //place copy of input element after each Nth elem
+    std::cout<<"Your modified figure list:\n"
+             <<figlist<<std::endl;
 }
 
 std::string normalize(const std::string &str){ //function which delete whitespaces at tail and convert to lower case

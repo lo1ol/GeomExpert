@@ -23,9 +23,9 @@ install:
 	install $(TARGET) $(PREFIX)
 
 uninstall:
-	rm -f $(PREFIX)/$(TARFET)
+	rm -rf $(PREFIX)/$(TAGRET)
 
 clean:
-	rm -f *.o $(TARGET)
+	rm -rf *.o $(TARGET)
 
 
