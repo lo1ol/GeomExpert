@@ -19,10 +19,27 @@ enum input_type{
     undefined
 };
 input_type parse_input(const std::string &answer);
-void input_figure_prompt(Figure3D *fig, GeomList &list);
+
+void input_figure_prompt(Figure3D* const &fig, GeomList &list);
+void input_figure_prompt(Figure3D*  &&fig, GeomList &list);
 
 int main()
 {
+
+//    Figure3D *testfig = new Parallelepiped(CubeParams(3));
+//    std::cout<<*testfig<<std::endl;
+//    CubeParams myparams(4);
+//    testfig->setParams(myparams);
+//    std::cout<<*testfig<<std::endl;
+//    testfig->setParams(new ParallelepipedParams);
+//    std::cout<<*testfig<<std::endl;
+
+//    delete testfig;
+
+//    Cube cubfig(CubeParams(3));
+//    cubfig = Cube();
+
+//    return 0;
     std::cout<<"Hello, I'm geometry expert!"<<std::endl
              <<"Do you want add some figures in my list to discover them properties? (y/n): ";
     std::string answer;
@@ -75,16 +92,17 @@ exit:
     sleep(2);
     std::cout<<"\nJoke. Ha-Ha\n"
              <<"I decide to play with your list\n"
-             <<"Input some number: ";
-    unsigned step;
-    if(!(std::cin>>step)){
+             <<"Input some positive number: ";
+    size_t step;
+    if(!(std::cin>>step) || step == 0){
         std::cout<<"You are boring! Goodbey Baka\n";
         return 0;
     }
     std::cout<<"\nIt's all..."<<std::flush;
     sleep(2);
-    std::cout<<" Joking again\n"
-             <<"My last wish. Input please some figure type and its proporties: ";
+    std::cout<<" Joking again"<<std::flush;
+    sleep(1);
+    std::cout<<"\nMy last wish. Input please some figure type and its proporties: ";
     if(!std::getline(std::cin>>std::ws, answer)){
         std::cout<<"You are boring! Goodbey Baka\n";
         return 0;
@@ -109,8 +127,8 @@ exit:
         return 0;
     }
     std::cin>>*fig;
-    ExtendedGeomList exfiglist(figlist);
-    exfiglist.addAfterEachNth(fig.get(), step);
+    ExtendedGeomList exfiglist(std::move(figlist));
+    exfiglist.addAfterEachNth(*fig, step);
     std::cout<<"Your figure list:\n"
              <<exfiglist<<std::endl;
 }
@@ -141,14 +159,25 @@ input_type parse_input(const std::string &answer){
     return input_type::undefined;
 }
 
-
-
-void input_figure_prompt(Figure3D *fig, GeomList &list){
-    std::cin>>*fig;
-    list.push(fig);
+void input_figure_prompt(Figure3D* &&fig, GeomList &list){
+    while(true){
+        try{
+            std::cin>>*fig;
+        }catch(const std::runtime_error &e){
+            std::cout<<e.what()
+                     <<"\nWHAT ARE YOU DOING??? We forget about it, ok? Try one more"<<std::endl;
+            continue;
+        }
+        break;
+    }
+    list.push(std::move(fig));
     std::cout<<"\nFigure added\n"
              <<"--To show figures in list use \"show list\"\n"
              <<"--To empty list of figures use \"empty list\"\n"
              <<"--To exit enter \"exit\"\n"
              <<std::endl;
+}
+
+void input_figure_prompt(Figure3D* const &fig, GeomList &list){
+    input_figure_prompt(fig->copy(), list);
 }

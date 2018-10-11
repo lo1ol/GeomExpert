@@ -5,6 +5,13 @@
 #include <memory>
 #include <string>
 
+#define MAKE_COPY_METHOD_OF(myclass) \
+myclass *myclass::copy() const \
+{ \
+    return new myclass(*this); \
+} \
+
+
 namespace figures{
 
 
@@ -175,8 +182,6 @@ PyramidParams::PyramidParams(double height, double innerRadius, unsigned sideCnt
 
 
 
-
-
 Figure3D &Figure3D::operator=(const Figure3D &other)
 {
     params.reset(other.params->copy());
@@ -210,9 +215,7 @@ std::ostream &operator<<(std::ostream &os, const Figure3D &fig){
     return p.radius*p.radius*M_PI*p.height;
 }
 
-/*virtual*/ Cylinder *Cylinder::copy() const{
-    return new Cylinder(*this);
-}
+MAKE_COPY_METHOD_OF(Cylinder)
 
 
 
@@ -224,19 +227,10 @@ std::ostream &operator<<(std::ostream &os, const Figure3D &fig){
     return p.height*p.length*p.width;
 }
 
-/*virtual*/ Parallelepiped *Parallelepiped::copy() const
-{
-    return new Parallelepiped(*this);
-}
+MAKE_COPY_METHOD_OF(Parallelepiped)
 
 
-
-
-
-/*virtual*/ Cube *Cube::copy() const
-{
-    return new Cube(*this);
-}
+MAKE_COPY_METHOD_OF(Cube)
 
 
 
@@ -246,8 +240,6 @@ std::ostream &operator<<(std::ostream &os, const Figure3D &fig){
     return (p.height*p.innerRadius/6)*p.sideCnt;
 }
 
-/*virtual*/ Pyramid *Pyramid::copy() const{
-    return new Pyramid(*this);
-}
+MAKE_COPY_METHOD_OF(Pyramid)
 
 }

@@ -26,9 +26,9 @@ public:
     GeomList &operator=(GeomList &&);
     ~GeomList(){ clear(); }
 
-
     void push(const value_type &fig){ push(fig.copy()); }
-    void push(const value_type *fig); //take ownership to itself
+    void push(value_type* const &fig){ push(fig->copy()); } //doesn't ownership to itself
+    void push(value_type* &&fig); //take ownership to itself
     void clear();
     friend std::ostream &operator<<(std::ostream &os, const GeomList &);
     std::ostream &print(std::ostream &os) const;
@@ -48,8 +48,10 @@ public:
     explicit ExtendedGeomList(GeomList &&other):GeomList(std::move(other)){}
     ExtendedGeomList &operator=(const ExtendedGeomList &)=default;
     ExtendedGeomList &operator=(ExtendedGeomList &&)=default;
-    void addAfterEachNth(const value_type &fig, size_t N) {addAfterEachNth(&fig, N);}
-    void addAfterEachNth(const value_type *fig, size_t N);
+
+    void addAfterEachNth(const value_type &fig, size_t N) {addAfterEachNth(fig.copy(), N);}
+    void addAfterEachNth(value_type* const &fig, size_t N){addAfterEachNth(fig->copy(), N);}
+    void addAfterEachNth(value_type* &&fig, size_t N);
 };
 
 

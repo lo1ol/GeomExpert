@@ -3,23 +3,21 @@
 namespace figures {
 
 GeomList::GeomList(const GeomList &other):
-    root(nullptr), last(nullptr)
+    GeomList()
 {
     if(other.root != nullptr){
         last = root = new Node{nullptr, other.root->val->copy()};
 
-        for(auto otherNode = other.root->next; otherNode != other.last; otherNode = otherNode->next){
+        for(auto otherNode = other.root->next; otherNode != nullptr; otherNode = otherNode->next){
             last->next = new Node{nullptr, otherNode->val->copy()};
             last = last->next;
         }
     }
 }
 
-GeomList::GeomList(GeomList && other)
+GeomList::GeomList(GeomList &&other):
+    root(other.root), last(other.last)
 {
-    this->clear();
-    root = other.root;
-    last = other.last;
     other.root = other.last = nullptr;
 }
 
@@ -38,20 +36,19 @@ GeomList &GeomList::operator=(GeomList &&other)
         this->clear();
         root = other.root;
         last = other.last;
-        other.root = nullptr;
-        other.last = nullptr;
+        other = GeomList();
     }
     return *this;
 }
 
-void GeomList::push(const GeomList::value_type *fig)
+void GeomList::push(GeomList::value_type * &&fig)
 {
     if(root == nullptr){
-        root = new Node{nullptr, const_cast<GeomList::value_type *>(fig)};
+        root = new Node{nullptr, fig};
         last = root;
     }
     else{
-        last->next = new Node{nullptr, const_cast<GeomList::value_type *>(fig)};
+        last->next = new Node{nullptr, fig};
         last = last->next;
     }
 }
@@ -82,7 +79,7 @@ std::ostream &GeomList::print(std::ostream &os) const
     return os;
 }
 
-void ExtendedGeomList::addAfterEachNth(const value_type *fig, size_t N)
+void ExtendedGeomList::addAfterEachNth(value_type* &&fig, size_t N)
 {
     size_t i = 0;
     auto curNode = root;
@@ -93,7 +90,7 @@ void ExtendedGeomList::addAfterEachNth(const value_type *fig, size_t N)
             curNode = curNode->next;
         }
         curNode = curNode->next;
-
     }
+    delete fig;
 }
 }

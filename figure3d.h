@@ -70,11 +70,12 @@ class Cube;
 
 class CubeParams: public ParallelepipedParams{
 public:
-    CubeParams(double height=1.):
+    explicit CubeParams(double height=1.):
         ParallelepipedParams (height, height, height){}
     CubeParams(const CubeParams&)=default;
     CubeParams &operator=(const CubeParams&)=default;
     ~CubeParams() override=default;
+
 
     operator std::string() const override;
     CubeParams *copy() const override;
@@ -113,9 +114,11 @@ private:
 class Figure3D{
 public:
     Figure3D(const Figure3DParams &params):
-        params(params.copy()){}
-    Figure3D(const Figure3D &other):
-        params(other.params->copy()){}
+        Figure3D(params.copy()){}
+    Figure3D(Figure3DParams* const &params):
+        Figure3D(params->copy()){}
+    Figure3D(Figure3DParams* &&params){ setParams(std::move(params)); }
+    Figure3D(const Figure3D &other): Figure3D(other.params->copy()){}
     Figure3D(Figure3D &&other):
         params(std::move(other.params)){}
     Figure3D &operator=(const Figure3D &);
@@ -123,7 +126,9 @@ public:
     virtual ~Figure3D() /*=default*/;
 
     const Figure3DParams *getParams() const {return params->copy();}
-    void setParams(const Figure3DParams &params){this->params.reset(params.copy());}
+    void setParams(const Figure3DParams &params){ setParams(params.copy()); }
+    void setParams(Figure3DParams* const &params){ setParams(params->copy()); }
+    void setParams(Figure3DParams* &&params){this->params.reset(params);}
     virtual double volume() const =0;
     virtual Figure3D *copy() const =0;
 
@@ -154,12 +159,13 @@ public:
 class Parallelepiped: public Figure3D{
 public:
     Parallelepiped(const ParallelepipedParams &params = ParallelepipedParams()):
-    Figure3D(params) {}
+        Figure3D(params) {}
     Parallelepiped(const Parallelepiped &)=default;
     Parallelepiped(Parallelepiped &&)=default;
     Parallelepiped &operator=(const Parallelepiped &) =default;
     Parallelepiped &operator=(Parallelepiped &&) =default;
     ~Parallelepiped() override =default;
+
 
     double volume() const final override;
     Parallelepiped *copy() const override;
@@ -175,6 +181,7 @@ public:
     Cube &operator=(Cube &&)=default;
     ~Cube() final override=default;
 
+
     Cube *copy() const final override;
 };
 
@@ -187,6 +194,7 @@ public:
     Pyramid &operator=(const Pyramid &)=default;
     Pyramid &operator=(Pyramid &&)=default;
     ~Pyramid() final override =default;
+
 
     virtual double volume() const final override;
     Pyramid *copy() const final override;
