@@ -13,7 +13,7 @@ $(TARGET): geomlist.o figure3d.o main.o
 geomlist.o: geomlist.cpp geomlist.h
 	$(CC) $(CFLAGS) geomlist.cpp
 
-figurelist.o: figure3d.cpp figure3d.h
+figure3d.o: figure3d.cpp figure3d.h
 	$(CC) $(CFLAGS) figure3d.cpp
 
 main.o: main.cpp figure3d.h geomlist.h 
